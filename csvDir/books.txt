@@ -1,0 +1,4 @@
+{"book":"The Man Who Lived","author":"James John","price":"6900.00"}
+{"book":"The Man Who Didn't","author":"James John","price":"7900.00"}
+{"book":"One Hungry Goat","author":"Michael Jackson","price":"21.00"}
+{"book":"Transylvanian Delimiters","author":"George Bush","price":"1.00"}
