@@ -21,6 +21,10 @@ export class UserService {
         ];
     }
  
+    getAllUsers() {
+        return this.users.map((user: User) => this.getUser(user.id))
+    }
+
     getUser(id: number) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
