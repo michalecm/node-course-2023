@@ -1,4 +1,5 @@
 import { User } from './models/user.model'
+import { v4 as uuid } from 'uuid'
 
 export class UserService {
 
@@ -7,25 +8,25 @@ export class UserService {
     constructor(){
         this.users = [
             {
-                id: 1,
+                id: '1',
                 name: 'Ann',
                 email: 'Ann@hobbies.com',
                 hobbies: ['books', 'running', 'sitting']
             },
             {
-                id: 1,
-                name: 'Ann',
-                email: 'Ann@hobbies.com',
-                hobbies: ['books', 'running', 'sitting']
+                id: uuid(),
+                name: 'Bob',
+                email: 'bob@hobbies.com',
+                hobbies: ['crying', 'crawling', 'screaming']
             }
         ];
     }
  
     getAllUsers() {
-        return this.users.map((user: User) => this.getUser(user.id))
+        return this.users;
     }
 
-    getUser(id: number) {
+    getUser(id: string) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             const { hobbies, ...newUser } = user;
@@ -35,7 +36,18 @@ export class UserService {
         return undefined;
     }
 
-    changeName(id: number, newName: string) {
+    addUser(name: string, hobbies: Array<string>, email: string) {
+        const id = uuid();
+        this.users.push({ name, hobbies, email, id });
+        return this.users.find(user => user.id === id);
+    }
+
+    deleteUser(id: string) {
+        this.users = this.users.filter(user => user.id !== id);
+        return this.users.find(user => user.id === id);
+    }
+
+    changeName(id: string, newName: string) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
@@ -48,7 +60,7 @@ export class UserService {
         return undefined;
     }
 
-    changeEmail(id: number, newEmail: string) {
+    changeEmail(id: string, newEmail: string) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
@@ -61,11 +73,11 @@ export class UserService {
         return undefined;
     }
     
-    getHobbies(id: number) {
+    getHobbies(id: string) {
         return this.users.find((user: User) => user.id === id)?.hobbies || undefined;
     }
 
-    addHobbies(id: number, newHobbies: Array<string>) {
+    addHobbies(id: string, newHobbies: Array<string>) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
@@ -78,7 +90,7 @@ export class UserService {
         return undefined;
     }
 
-    deleteHobbies(id: number, hobbiesToRemove: Array<string>) {
+    deleteHobbies(id: string, hobbiesToRemove: Array<string>) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
