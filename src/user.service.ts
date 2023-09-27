@@ -27,13 +27,8 @@ export class UserService {
     }
 
     getUser(id: string) {
-        const user = this.users.find((user: User) => user.id === id);
-        if(user) {
-            const { hobbies, ...newUser } = user;
-            return newUser;
-        }
-        
-        return undefined;
+        console.log(id)
+        return this.users.find((user: User) => user.id === id);
     }
 
     addUser(name: string, hobbies: Array<string>, email: string) {

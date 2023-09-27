@@ -4,15 +4,18 @@ import { UserController } from './src/user.controller'
 
 const server = http.createServer((req, res) => {
     const userController = new UserController();
-    const { path, pathName } : any = url.parse(req.url || '');
-    const userRoutePattern = /^\/user\/(\d+)$/; 
-    let requestBody = '';
-   
+    const { path } : any = url.parse(req.url || '');
+    const usersWithId = /^\/users\/.*$/;
+    const hobbiesWithId = /^\/hobbies\/.*$/;
+       
     if (req.method === 'GET') {
-        if(path.includes('users')) {
-            return userController.getUser(req, res);
+        if(path === '/users') {
+          return userController.getAllUsers(req, res);
         }
-        if(path.includes('hobbies')) {
+        if(usersWithId.test(path)) {
+          return userController.getUser(req, res)
+        }
+        if(hobbiesWithId.test(path)) {
             return userController.getHobbies(req, res);
         }
     }
