@@ -17,7 +17,7 @@ export class UserService {
                 id: uuid(),
                 name: 'Bob',
                 email: 'bob@hobbies.com',
-                hobbies: ['crying', 'crawling', 'screaming']
+                hobbies: ['crying', 'eating', 'netflix']
             }
         ];
     }
@@ -42,27 +42,13 @@ export class UserService {
         return this.users.find(user => user.id === id);
     }
 
-    changeName(id: string, newName: string) {
+    updateUser(id: string, updatedUser: any) {
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
-            const { name, ...updatedUser } = user;
-            const result = { ...updatedUser, name: newName };
+            const result = { ...updatedUser, id };
             this.users.push(result);
-            return result;
-        }
-
-        return undefined;
-    }
-
-    changeEmail(id: string, newEmail: string) {
-        const user = this.users.find((user: User) => user.id === id);
-        if(user) {
-            this.users = this.users.filter((user: User) => user.id !== id);
-            const { email, ...updatedUser } = user;
-            const result = { ...updatedUser, email: newEmail };
-            this.users.push(result);
-            return result;
+            return this.users.find(user => user.id === id);
         }
 
         return undefined;
@@ -73,25 +59,32 @@ export class UserService {
     }
 
     addHobbies(id: string, newHobbies: Array<string>) {
+        console.log('do we g')
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
-            const { hobbies, ...updatedUser } = user;
-            const result = { ...updatedUser, hobbies: [...hobbies, ...newHobbies] };
-            this.users.push(result);
-            return result;
+            console.log('wasss')
+            const oldHobbies = user.hobbies ?? []
+            console.log(oldHobbies)
+            console.log(newHobbies)
+            const newUser = {...user, hobbies: [...oldHobbies, ...newHobbies]}
+            this.users.push(newUser);
+            console.log(this.users.find(user => user.id === id))
+            return this.users.find(user => user.id === id);
         }
 
         return undefined;
     }
 
     deleteHobbies(id: string, hobbiesToRemove: Array<string>) {
+        console.log('we;;')
         const user = this.users.find((user: User) => user.id === id);
         if(user) {
             this.users = this.users.filter((user: User) => user.id !== id);
             const { hobbies, ...updatedUser } = user;
             const result = { ...updatedUser, hobbies: hobbies.filter(hobby => !hobbiesToRemove.includes(hobby))};
             this.users.push(result);
+            console.log('well')
             return result;
         }
 

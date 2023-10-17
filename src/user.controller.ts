@@ -42,34 +42,70 @@ export class UserController {
         }
     }
 
-    // changeName(req: http.IncomingMessage, res: http.ServerResponse) {
-    //     if(req.url) { 
-    //         const userId = Number.parseInt(url.parse(req.url).pathname ?? '0')
-    //         const newName = req.
-            
-    //             res.statusCode = 200;
-    //             res.setHeader('Content-Type', 'application/json')
-    //             return res.end(JSON.stringify(user))
+    addUser(req: http.IncomingMessage, res: http.ServerResponse) {
+        let chunks: any = [];
+        let parsedData: any = '';
+        req.on("data", (chunk) => {
+            chunks.push(chunk);
+        });
 
-    //         res.statusCode = 404;
-    //         res.statusMessage = "User ID not found."
-    //         return res.end();
-    //     }
-    // }
+        req.on("end", () => {
+            const data = Buffer.concat(chunks);
+            parsedData = JSON.parse(data.toString('utf-8'))
+            const result = this.userService.addUser(parsedData.name, parsedData.hobbies, parsedData.email)
+            if(result) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json')
+                res.end(JSON.stringify(result))
+            }
 
-    // req.on('data', (chunk) => {
-    //     requestBody += chunk.toString();
-    //   });
-  
-    //   req.on('end', () => {
-    //     const contentType = req.headers['content-type'];    
-    //     if (contentType !== 'application/json') {
-    //       res.writeHead(400, { 'Content-Type': 'text/plain' });
-    //       res.end('This application only accepts JSON requests.');
-    //     }
-    //   });
+            res.statusCode = 500;
+            res.end("Error");
+        })
+    }
 
-    changeEmail(req: http.IncomingMessage, res: http.ServerResponse) {}
+    deleteUser(req: http.IncomingMessage, res: http.ServerResponse) {
+        if(req.url) { 
+            const pathArr = url.parse(req.url).path?.split('/')
+            const userId = pathArr[pathArr.length - 1]
+
+            const user = this.userService.getUser(userId);
+            if(user){
+                this.userService.deleteUser(userId)
+            }
+        }
+    }
+
+    updateUser(req: http.IncomingMessage, res: http.ServerResponse) {
+        let chunks: any = [];
+        let parsedData: any = '';
+        req.on("data", (chunk) => {
+            chunks.push(chunk);
+        });
+
+        req.on("end", () => {
+            const data = Buffer.concat(chunks);
+            parsedData = JSON.parse(data.toString('utf-8'))
+            if(req.url) { 
+                const pathArr = url.parse(req.url).path?.split('/')
+                const userId = pathArr[pathArr.length - 1]
+    
+                const user = this.userService.getUser(userId);
+    
+                if(user) {
+                    const result = this.userService.updateUser(userId, parsedData)
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json')
+                    res.end(JSON.stringify(result))
+                }
+    
+                res.statusCode = 404;
+                res.statusMessage = "User ID not found."
+                res.end();
+            }
+        })
+    }
+
     getHobbies(req: http.IncomingMessage, res: http.ServerResponse) {
         if(req.url) { 
             const pathArr = url.parse(req.url).path?.split('/')
@@ -88,6 +124,69 @@ export class UserController {
             res.end();
         }
     }
-    addHobbies(req: http.IncomingMessage, res: http.ServerResponse) {}
-    deleteHobbies(req: http.IncomingMessage, res: http.ServerResponse) {}
+
+    addHobbies(req: http.IncomingMessage, res: http.ServerResponse) {
+        let chunks: any = [];
+        let parsedData: any = '';
+        req.on("data", (chunk) => {
+            chunks.push(chunk);
+        });
+
+        req.on("end", () => {
+            const data = Buffer.concat(chunks);
+            console.log(data.toString('utf-8'))
+            parsedData = JSON.parse(data.toString('utf-8'))
+            console.log(parsedData.hobbies)
+            if(req.url) { 
+                const pathArr = url.parse(req.url).path?.split('/')
+                const userId = pathArr[pathArr.length - 1]
+    
+                const user = this.userService.getUser(userId);
+    
+                if(user) {
+                    console.log('in controller ' + parsedData.hobbies)
+                    const result = this.userService.addHobbies(userId, parsedData.hobbies)
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json')
+                    res.end(JSON.stringify(result))
+                }
+    
+                res.statusCode = 404;
+                res.statusMessage = "User ID not found."
+                res.end();
+            }
+        })
+    }
+   
+    deleteHobbies(req: http.IncomingMessage, res: http.ServerResponse) {
+        let chunks: any = [];
+        let parsedData: any = '';
+        req.on("data", (chunk) => {
+            chunks.push(chunk);
+        });
+
+        req.on("end", () => {
+            console.log('we;;2')
+            const data = Buffer.concat(chunks);
+            parsedData = JSON.parse(data.toString('utf-8'))
+            if(req.url) { 
+                const pathArr = url.parse(req.url).path?.split('/')
+                const userId = pathArr[pathArr.length - 1]
+    
+                const user = this.userService.getUser(userId);
+    
+                if(user) {
+                    const result = this.userService.deleteHobbies(userId, parsedData.hobbies)
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json')
+                    res.end(JSON.stringify(result))
+                }
+    
+                res.statusCode = 404;
+                res.statusMessage = "User ID not found."
+                res.end();
+            }
+        })
+    }
+
 }
